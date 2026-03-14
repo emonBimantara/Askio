@@ -15,6 +15,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Askio',
       theme: ThemeData(
+        scaffoldBackgroundColor: Color(0xFFF5EDE2),
+        fontFamily: "Inter",
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: Colors.black,
         ),
