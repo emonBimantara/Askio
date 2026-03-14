@@ -1,11 +1,17 @@
+import 'package:askio/Features/Auth/Controller/auth_controller.dart';
 import 'package:askio/Features/Auth/Views/login_page.dart';
 import 'package:askio/Features/Auth/Views/register_page.dart';
 import 'package:askio/Features/Start/onboarding_page.dart';
 import 'package:askio/Features/Start/splash_page.dart';
+import 'package:askio/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  Get.put(AuthController());
   runApp(const MyApp());
 }
 
