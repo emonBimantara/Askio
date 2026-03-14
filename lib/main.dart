@@ -1,3 +1,6 @@
+import 'package:askio/Features/Auth/Views/login_page.dart';
+import 'package:askio/Features/Auth/Views/register_page.dart';
+import 'package:askio/Features/Start/onboarding_page.dart';
 import 'package:askio/Features/Start/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,7 +26,10 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/splash',
       getPages: [
-        GetPage(name: '/splash', page: () => SplashPage())
+        GetPage(name: '/splash', page: () => SplashPage()),
+        GetPage(name: '/onboarding', page: () => OnboardingPage()),
+        GetPage(name: '/login', page: () => LoginPage()),
+        GetPage(name: '/register', page: () => RegisterPage())
       ],
     );
   }
