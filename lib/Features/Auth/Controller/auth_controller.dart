@@ -74,8 +74,6 @@ class AuthController extends GetxController {
       await credential.user?.updateDisplayName(username);
 
       Get.snackbar("Success", "Successfully registered");
-
-      Get.offAllNamed('/login');
     } on FirebaseAuthException catch (e) {
       Get.snackbar("Error", _registerError(e.code));
     } finally {

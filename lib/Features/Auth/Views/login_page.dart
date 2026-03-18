@@ -22,18 +22,18 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
 
-              const Text(
+              Text(
                 'Welcome Back! Glad To See You, Again!',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
 
-              const SizedBox(height: 30),
+              SizedBox(height: 30),
 
               CustomTextfield(
                 hintText: "Enter your email",
@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
                 controller: emailController,
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
 
               CustomTextfield(
                 hintText: "Enter your password",
@@ -50,9 +50,9 @@ class _LoginPageState extends State<LoginPage> {
                 suffixIconPath: 'assets/icons/eye.png',
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
 
-              const Align(
+              Align(
                 alignment: Alignment.bottomRight,
                 child: Text(
                   'Forgot Password?',
@@ -64,22 +64,25 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              const SizedBox(height: 25),
+              SizedBox(height: 25),
 
-              CustomButton(
-                customText: 'Login',
-                onTap: () {
-                  authController.login(
-                    emailController.text,
-                    passwordController.text,
-                  );
-                },
+              Obx(
+                () => CustomButton(
+                  customText: 'Login',
+                  isLoading: authController.isLoading.value,
+                  onTap: () {
+                    authController.login(
+                      emailController.text,
+                      passwordController.text,
+                    );
+                  },
+                ),
               ),
 
-              const SizedBox(height: 40),
+              SizedBox(height: 40),
 
               Row(
-                children: const [
+                children: [
                   Expanded(child: Divider(thickness: 1)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -95,13 +98,13 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
 
-              const SizedBox(height: 40),
+              SizedBox(height: 40),
 
               GestureDetector(
                 onTap: () => Get.toNamed("/register"),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
                       "Don't have an account?",
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -118,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
             ],
           ),
         ),
