@@ -1,3 +1,4 @@
+import 'package:askio/Features/Auth/Controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,9 +12,6 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 2), () {
-      Get.toNamed('/onboarding');
-    });
     super.initState();
   }
 

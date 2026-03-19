@@ -23,8 +23,10 @@ class AuthController extends GetxController {
 
     try {
       isLoading.value = true;
-
-      await auth.signInWithEmailAndPassword(email: email, password: password);
+      await auth.signInWithEmailAndPassword(
+        email: email, 
+        password: password
+      );
     } on FirebaseAuthException catch (e) {
       Get.snackbar("Error", _loginError(e.code));
     } finally {
@@ -85,7 +87,9 @@ class AuthController extends GetxController {
     await auth.signOut();
   }
 
-  void setInitialScreen(User? user) {
+  void setInitialScreen(User? user) async {
+    await Future.delayed(const Duration(seconds: 3));
+
     if (user == null) {
       Get.offAllNamed('/login');
     } else {

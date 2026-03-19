@@ -1,7 +1,7 @@
 import 'package:askio/Features/Auth/Views/login_page.dart';
 import 'package:askio/Features/Auth/Views/register_page.dart';
 import 'package:askio/Features/Home/Views/home_page.dart';
-import 'package:askio/Features/Start/onboarding_page.dart';
+// import 'package:askio/Features/Start/onboarding_page.dart';
 import 'package:askio/Features/Start/splash_page.dart';
 import 'package:askio/Routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +11,8 @@ class AppRouter {
     switch (settings.name) {
       case AppRoutes.splashPage:
         return MaterialPageRoute(builder: (_) => SplashPage());
-      case AppRoutes.onboardingPage:
-        return MaterialPageRoute(builder: (_) => OnboardingPage());
+      // case AppRoutes.onboardingPage:
+      //   return MaterialPageRoute(builder: (_) => OnboardingPage());
       case AppRoutes.loginPage:
         return MaterialPageRoute(builder: (_) => LoginPage());
       case AppRoutes.registerPage:
