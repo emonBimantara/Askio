@@ -17,6 +17,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController = TextEditingController();
 
+  // State untuk menyimpan pilihan role, default: student
+  String selectedRole = 'student'; 
+
   final AuthController authController = Get.find();
 
   @override
@@ -69,6 +72,45 @@ class _RegisterPageState extends State<RegisterPage> {
                 suffixIconPath: 'assets/icons/eye.png',
               ),
 
+              const SizedBox(height: 20),
+
+              // Dropdown untuk memilih Role
+              DropdownButtonFormField<String>(
+                value: selectedRole,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: const Color(0xFFF7F8F9), 
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Color(0xFFE8ECF4)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Color(0xFFE8ECF4)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Color(0xFF2120FF)),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                ),
+                items: const [
+                  DropdownMenuItem(
+                    value: 'student',
+                    child: Text('Register as Student', style: TextStyle(color: Colors.black87)),
+                  ),
+                  DropdownMenuItem(
+                    value: 'teacher',
+                    child: Text('Register as Teacher', style: TextStyle(color: Colors.black87)),
+                  ),
+                ],
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedRole = newValue!;
+                  });
+                },
+              ),
+
               const SizedBox(height: 25),
 
               Obx(
@@ -81,6 +123,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       emailController.text,
                       passwordController.text,
                       passwordConfirmController.text,
+                      selectedRole, // Kirim role ke controller
                     );
                   },
                 ),

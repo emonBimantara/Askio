@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Rx<User?> firebaseUser = Rx<User?>(null);
   RxBool isLoading = false.obs;
+
+  User? get user => firebaseUser.value;
 
   @override
   void onInit() {
@@ -23,10 +26,7 @@ class AuthController extends GetxController {
 
     try {
       isLoading.value = true;
-      await auth.signInWithEmailAndPassword(
-        email: email, 
-        password: password
-      );
+      await auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       Get.snackbar("Error", _loginError(e.code));
     } finally {
@@ -39,29 +39,18 @@ class AuthController extends GetxController {
     String email,
     String password,
     String confirmPassword,
+    String role,
   ) async {
     if (username.isEmpty ||
         email.isEmpty ||
         password.isEmpty ||
         confirmPassword.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "All fields must be filled",
-        snackPosition: SnackPosition.TOP,
-        margin: const EdgeInsets.all(15),
-        borderRadius: 12,
-      );
+      Get.snackbar("Error", "All fields must be filled");
       return;
     }
 
     if (password != confirmPassword) {
-      Get.snackbar(
-        "Error",
-        "Password confirmation does not match",
-        snackPosition: SnackPosition.TOP,
-        margin: const EdgeInsets.all(15),
-        borderRadius: 12,
-      );
+      Get.snackbar("Error", "Password confirmation does not match");
       return;
     }
 
@@ -74,6 +63,17 @@ class AuthController extends GetxController {
       );
 
       await credential.user?.updateDisplayName(username);
+
+      await credential.user?.reload();
+      firebaseUser.value = auth.currentUser;
+
+      // adding role to firestore
+      await firestore.collection('users').doc(credential.user!.uid).set({
+        'username': username,
+        'email': email,
+        'role': role,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
 
       Get.snackbar("Success", "Successfully registered");
     } on FirebaseAuthException catch (e) {

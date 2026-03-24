@@ -1,6 +1,7 @@
 import 'package:askio/Features/Auth/Controller/auth_controller.dart';
 import 'package:askio/Features/Auth/Views/login_page.dart';
 import 'package:askio/Features/Auth/Views/register_page.dart';
+import 'package:askio/Features/Home/Views/add_quiz_page.dart';
 import 'package:askio/Features/Home/Views/home_page.dart';
 import 'package:askio/Features/Start/onboarding_page.dart';
 import 'package:askio/Features/Start/splash_page.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/login', page: () => LoginPage()),
         GetPage(name: '/register', page: () => RegisterPage()),
         GetPage(name: '/home', page: () => HomePage()),
+        GetPage(name: '/addQuiz', page: () => AddQuizPage()),
       ],
     );
   }

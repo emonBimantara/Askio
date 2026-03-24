@@ -1,0 +1,55 @@
+import 'package:get/get.dart';
+import '../../Auth/Controller/auth_controller.dart';
+import '../Model/quiz_model.dart';
+import '../Services/quiz_service.dart';
+
+class HomeController extends GetxController {
+  final QuizService _quizService = QuizService();
+  final UserService _userService = UserService();
+
+  final AuthController authController = Get.find();
+
+  var quizzes = <QuizModel>[].obs;
+  var isLoading = true.obs;
+  var userRole = 'student'.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    initData();
+  }
+
+  Future<void> initData() async {
+    try {
+      isLoading(true);
+      final user = authController.user;
+      if (user != null) {
+        userRole.value = await _userService.getUserRole(user.uid);
+        await refreshQuizzes();
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> refreshQuizzes() async {
+    final user = authController.user;
+
+    if (userRole.value == 'teacher') {
+      final data = await _quizService.getQuizzes(teacherId: user?.uid);
+      quizzes.assignAll(data);
+    } else {
+      quizzes.clear();
+    }
+  }
+
+  Future<void> deleteQuiz(String quizId) async {
+    try {
+      await _quizService.deleteQuiz(quizId);
+      await refreshQuizzes();
+      Get.snackbar("Success", "Quiz deleted");
+    } catch (e) {
+      Get.snackbar("Error", "Failed to delete the quiz");
+    }
+  }
+}
