@@ -1,8 +1,10 @@
 import 'package:askio/Features/Auth/Controller/auth_controller.dart';
 import 'package:askio/Features/Auth/Views/login_page.dart';
 import 'package:askio/Features/Auth/Views/register_page.dart';
+import 'package:askio/Features/Home/Model/quiz_model.dart';
 import 'package:askio/Features/Home/Views/add_quiz_page.dart';
 import 'package:askio/Features/Home/Views/home_page.dart';
+import 'package:askio/Features/Home/Views/quiz_preview_page.dart';
 import 'package:askio/Features/Start/onboarding_page.dart';
 import 'package:askio/Features/Start/splash_page.dart';
 import 'package:askio/firebase_options.dart';
@@ -40,6 +42,10 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/register', page: () => RegisterPage()),
         GetPage(name: '/home', page: () => HomePage()),
         GetPage(name: '/addQuiz', page: () => AddQuizPage()),
+        GetPage(
+          name: '/quizPreview',
+          page: () => QuizPreviewPage(quiz: Get.arguments as QuizModel),
+        ),
       ],
     );
   }

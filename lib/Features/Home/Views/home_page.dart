@@ -160,7 +160,11 @@ class HomePage extends StatelessWidget {
                                     },
                                     child: QuizzesCard(
                                       quiz: quiz,
-                                      onTap: () {},
+                                      onTap: () {
+                                        if (controller.userRole.value != 'teacher'){
+                                          Get.toNamed('/quizPreview', arguments: quiz);
+                                        }
+                                      },
                                     ),
                                   );
                                 },

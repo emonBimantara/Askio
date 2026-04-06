@@ -5,4 +5,5 @@ class AppRoutes {
   static const String registerPage = "register";
   static const String homePage = "/home";
   static const String addQuizPage = "/addQuiz";
+  static const String quizPreviewPage = "/quizPreview";
 }
