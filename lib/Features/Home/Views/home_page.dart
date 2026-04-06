@@ -101,7 +101,7 @@ class HomePage extends StatelessWidget {
                             if (controller.userRole.value == 'teacher') {
                               Get.toNamed('/addQuiz');
                             } else {
-                              print("Buka input kode");
+                              _showJoinCodeDialog(controller);
                             }
                           },
                           child: Container(
@@ -126,7 +126,7 @@ class HomePage extends StatelessWidget {
                                 Text(
                                   controller.userRole.value == 'teacher'
                                       ? "Add Quiz"
-                                      : "Code",
+                                      : "Join Quiz",
                                   style: const TextStyle(color: Colors.white),
                                 ),
                               ],
@@ -174,6 +174,26 @@ class HomePage extends StatelessWidget {
           ],
         );
       }),
+    );
+  }
+
+  void _showJoinCodeDialog(HomeController controller) {
+    Get.defaultDialog(
+      title: "Masukkan Kode Kuis",
+      content: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: TextField(
+          controller: controller.codeController,
+          decoration: const InputDecoration(
+            hintText: "Contoh: ABC123",
+            border: OutlineInputBorder(),
+          ),
+        ),
+      ),
+      textConfirm: "Join",
+      textCancel: "Batal",
+      confirmTextColor: Colors.white,
+      onConfirm: () => controller.joinQuiz(),
     );
   }
 

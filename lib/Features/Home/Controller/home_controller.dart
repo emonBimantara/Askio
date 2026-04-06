@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Auth/Controller/auth_controller.dart';
 import '../Model/quiz_model.dart';
@@ -12,6 +13,8 @@ class HomeController extends GetxController {
   var quizzes = <QuizModel>[].obs;
   var isLoading = true.obs;
   var userRole = 'student'.obs;
+  
+  final TextEditingController codeController = TextEditingController();
 
   @override
   void onInit() {
@@ -39,7 +42,8 @@ class HomeController extends GetxController {
       final data = await _quizService.getQuizzes(teacherId: user?.uid);
       quizzes.assignAll(data);
     } else {
-      quizzes.clear();
+      final data = await _quizService.getQuizzes(studentId: user?.uid);
+      quizzes.assignAll(data);
     }
   }
 
@@ -50,6 +54,29 @@ class HomeController extends GetxController {
       Get.snackbar("Success", "Quiz deleted");
     } catch (e) {
       Get.snackbar("Error", "Failed to delete the quiz");
+    }
+  }  
+
+  Future<void> joinQuiz() async {
+    final code = codeController.text.trim();
+    final user = authController.user;
+
+    if (code.isEmpty) {
+      Get.snackbar("Peringatan", "Kode tidak boleh kosong");
+      return;
+    }
+
+    if (user != null) {
+      isLoading(true);
+      bool success = await _quizService.joinQuizByCode(code, user.uid);
+
+      if (success) {
+        codeController.clear();
+        Get.back(); 
+        await refreshQuizzes();
+        Get.snackbar("Berhasil", "Kamu berhasil join kuis!");
+      }
+      isLoading(false);
     }
   }
 }
