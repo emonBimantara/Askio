@@ -1,6 +1,7 @@
 import 'package:askio/Components/custom_button.dart';
 import 'package:askio/Features/Home/Model/quiz_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class QuizPreviewPage extends StatelessWidget {
   final QuizModel quiz;
@@ -108,8 +109,11 @@ class QuizPreviewPage extends StatelessWidget {
 
                   Spacer(),
                   CustomButton(
-                    onTap: () => (){},
-                    customText: 'Start Quiz')
+                    onTap: () => {
+                      Get.toNamed('/questionPage')
+                    },
+                    customText: 'Start Quiz'
+                  )
                 ],
               ),
             ),

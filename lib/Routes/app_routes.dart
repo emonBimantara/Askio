@@ -6,4 +6,6 @@ class AppRoutes {
   static const String homePage = "/home";
   static const String addQuizPage = "/addQuiz";
   static const String quizPreviewPage = "/quizPreview";
+  static const String questionPage = "/questionPage";
+  static const String resultPage = "/resultPage";
 }

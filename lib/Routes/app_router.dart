@@ -4,6 +4,7 @@ import 'package:askio/Features/Home/Model/quiz_model.dart';
 import 'package:askio/Features/Home/Views/add_quiz_page.dart';
 import 'package:askio/Features/Home/Views/home_page.dart';
 import 'package:askio/Features/Home/Views/quiz_preview_page.dart';
+import 'package:askio/Features/Quiz/View/question_page.dart';
 // import 'package:askio/Features/Start/onboarding_page.dart';
 import 'package:askio/Features/Start/splash_page.dart';
 import 'package:askio/Routes/app_routes.dart';
@@ -27,6 +28,8 @@ class AppRouter {
       case AppRoutes.quizPreviewPage:
         final quiz = settings.arguments as QuizModel;
         return MaterialPageRoute(builder: (_) => QuizPreviewPage(quiz: quiz));
+      case AppRoutes.questionPage:
+        return MaterialPageRoute(builder: (_) => QuestionPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(body: Center(child: Text("Page Not Found"))),
