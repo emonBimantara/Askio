@@ -1,21 +1,17 @@
 import 'package:get/get.dart';
 import '../Model/question_model.dart';
+import '../Model/quiz_result_model.dart';
+import '../Services/quiz_result_service.dart';
 
 class QuestionController extends GetxController {
   var questions = <QuestionModel>[].obs;
-
   var currentIndex = 0.obs;
-
   var userAnswers = <int?>[].obs;
 
-  var isInitialized = false;
-
   void setQuestions(List<QuestionModel> qList) {
-    if (isInitialized) return;
-
     questions.value = qList;
     userAnswers.value = List.filled(qList.length, null);
-    isInitialized = true;
+    currentIndex.value = 0;
   }
 
   void inputAnswer(int questionIndex, int answerIndex) {
@@ -38,20 +34,55 @@ class QuestionController extends GetxController {
   }
 
   int calculateScore() {
-    int correct = 0;
+    if (questions.isEmpty) return 0;
 
+    int correct = 0;
     for (int i = 0; i < questions.length; i++) {
-      if (userAnswers[i] == questions[i].correctAnswerIndex) {
+      if (i < userAnswers.length &&
+          userAnswers[i] == questions[i].correctAnswerIndex) {
         correct++;
       }
     }
-
     return ((correct / questions.length) * 100).round();
   }
 
+  Future<void> submitQuiz({
+    required String quizId,
+    required String userId,
+  }) async {
+    try {
+      List<ResultDetailModel> details = questions.asMap().entries.map((entry) {
+        int index = entry.key;
+        var q = entry.value;
+        int? selectedAns = index < userAnswers.length
+            ? userAnswers[index]
+            : null;
+
+        return ResultDetailModel(
+          questionText: q.questionText,
+          options: q.options,
+          selectedAnswerIndex: selectedAns,
+          correctAnswerIndex: q.correctAnswerIndex,
+          isCorrect: selectedAns == q.correctAnswerIndex,
+        );
+      }).toList();
+
+      QuizResultModel finalResult = QuizResultModel(
+        userId: userId,
+        quizId: quizId,
+        score: calculateScore(),
+        details: details,
+      );
+
+      await QuizResultService().saveQuiz(finalResult);
+    } catch (e) {
+      print("ERROR submitQuiz: $e");
+    }
+  }
+
   void reset() {
+    questions.clear();
     userAnswers.clear();
     currentIndex.value = 0;
-    isInitialized = false;
   }
 }
