@@ -47,7 +47,10 @@ class MyApp extends StatelessWidget {
           name: '/quizPreview',
           page: () => QuizPreviewPage(quiz: Get.arguments as QuizModel),
         ),
-        GetPage(name: '/questionPage', page: () => QuestionPage())
+        GetPage(
+          name: '/questionPage', 
+          page: () => QuestionPage(quiz: Get.arguments as QuizModel)
+        )
       ],
     );
   }

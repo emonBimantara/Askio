@@ -29,7 +29,8 @@ class AppRouter {
         final quiz = settings.arguments as QuizModel;
         return MaterialPageRoute(builder: (_) => QuizPreviewPage(quiz: quiz));
       case AppRoutes.questionPage:
-        return MaterialPageRoute(builder: (_) => QuestionPage());
+        final quiz = settings.arguments as QuizModel;
+        return MaterialPageRoute(builder: (_) => QuestionPage(quiz: quiz));
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(body: Center(child: Text("Page Not Found"))),

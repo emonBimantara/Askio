@@ -54,7 +54,7 @@ class QuizService {
 
       if (participants.contains(studentId)) {
         Get.snackbar("Info", "Kamu sudah join kuis ini sebelumnya");
-        return false; 
+        return false;
       }
 
       await _db.collection('quizzes').doc(quizDoc.id).update({
@@ -120,7 +120,8 @@ class AddQuizService {
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    // Set Subcollection Questions
+    Map<String, int> answerMap = {'A': 0, 'B': 1, 'C': 2, 'D': 3};
+
     for (var q in questions) {
       final questionRef = quizRef.collection('questions').doc();
 
@@ -131,17 +132,12 @@ class AddQuizService {
         q['optionD'].text,
       ];
 
-      String correctText = '';
-
-      if (q['correctAnswer'] == 'A') correctText = q['optionA'].text;
-      if (q['correctAnswer'] == 'B') correctText = q['optionB'].text;
-      if (q['correctAnswer'] == 'C') correctText = q['optionC'].text;
-      if (q['correctAnswer'] == 'D') correctText = q['optionD'].text;
+      int correctIndex = answerMap[q['correctAnswer']] ?? 0;
 
       batch.set(questionRef, {
         'questionText': q['questionText'].text,
         'options': options,
-        'correctAnswer': correctText,
+        'correctAnswerIndex': correctIndex, 
       });
     }
 

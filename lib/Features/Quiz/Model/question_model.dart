@@ -2,21 +2,23 @@ class QuestionModel {
   final String id;
   final String questionText;
   final List<String> options;
-  final String correctAnswerIndex;
+  final int correctAnswerIndex; 
 
   QuestionModel({
     required this.id,
     required this.questionText,
     required this.options,
-    required this.correctAnswerIndex
+    required this.correctAnswerIndex,
   });
 
-  factory QuestionModel.fromFirestore(String id, Map<String, dynamic> data){
+  factory QuestionModel.fromFirestore(String id, Map<String, dynamic> data) {
     return QuestionModel(
-      id: id, 
-      questionText: data["questionText"] ?? "No Question", 
-      options: List<String>.from(data["options"] ?? []), 
-      correctAnswerIndex: data["correctAnswerIndex"] ?? 0
+      id: id,
+      questionText: data["questionText"] ?? "No Question",
+      options: List<String>.from(data["options"] ?? []),
+      correctAnswerIndex: int.parse(
+        data["correctAnswerIndex"].toString(),
+      ), 
     );
   }
 }

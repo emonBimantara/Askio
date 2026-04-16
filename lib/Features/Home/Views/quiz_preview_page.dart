@@ -110,7 +110,7 @@ class QuizPreviewPage extends StatelessWidget {
                   Spacer(),
                   CustomButton(
                     onTap: () => {
-                      Get.toNamed('/questionPage')
+                      Get.toNamed('/questionPage', arguments: quiz,)
                     },
                     customText: 'Start Quiz'
                   )
