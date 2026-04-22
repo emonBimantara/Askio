@@ -48,6 +48,7 @@ class QuestionController extends GetxController {
 
   Future<void> submitQuiz({
     required String quizId,
+    required String quizTitle,
     required String userId,
   }) async {
     try {
@@ -70,6 +71,7 @@ class QuestionController extends GetxController {
       QuizResultModel finalResult = QuizResultModel(
         userId: userId,
         quizId: quizId,
+        quizTitle: quizTitle,
         score: calculateScore(),
         details: details,
       );

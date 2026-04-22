@@ -45,7 +45,7 @@ class QuizService {
           .get();
 
       if (snapshot.docs.isEmpty) {
-        Get.snackbar("Gagal", "Kode kuis tidak ditemukan");
+        Get.snackbar("Error", "Quiz code not found");
         return false;
       }
 
@@ -53,7 +53,7 @@ class QuizService {
       final List participants = quizDoc.data()['participants'] ?? [];
 
       if (participants.contains(studentId)) {
-        Get.snackbar("Info", "Kamu sudah join kuis ini sebelumnya");
+        Get.snackbar("Info", "You have already joined this quiz");
         return false;
       }
 
@@ -70,6 +70,23 @@ class QuizService {
 
   Future<void> deleteQuiz(String quizId) async {
     await _db.collection('quizzes').doc(quizId).delete();
+  }
+
+  Future<List<Map<String, dynamic>>> getQuizHistory(String userId) async {
+    try {
+      final snapshot = await _db
+          .collection('user_results')
+          .where('userId', isEqualTo: userId)
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      return snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      print("Error fetching quiz history: $e");
+      return [];
+    }
   }
 }
 
@@ -137,7 +154,7 @@ class AddQuizService {
       batch.set(questionRef, {
         'questionText': q['questionText'].text,
         'options': options,
-        'correctAnswerIndex': correctIndex, 
+        'correctAnswerIndex': correctIndex,
       });
     }
 

@@ -116,10 +116,6 @@ class QuestionPage extends StatelessWidget {
                             CustomButton(
                               customText: isLastQuestion ? "Finish Quiz" : "Next Question",
                               onTap: () async {
-                                if (selectedAnswer == null) {
-                                  Get.snackbar("Warning", "Please select an answer first");
-                                  return;
-                                }
 
                                 if (!isLastQuestion) {
                                   controller.nextQuestion();
@@ -134,6 +130,7 @@ class QuestionPage extends StatelessWidget {
                                   await controller.submitQuiz(
                                     quizId: quiz.id,
                                     userId: authController.user!.uid,
+                                    quizTitle: quiz.title
                                   );
 
                                   Get.snackbar("Quiz Finished", "Score: $finalScore");

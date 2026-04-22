@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class QuizResultModel {
   final String? id;
   final String userId;
+  final String quizTitle;
   final String quizId;
   final int score;
   final DateTime? createdAt;
@@ -11,6 +12,7 @@ class QuizResultModel {
   QuizResultModel({
     this.id,
     required this.userId,
+    required this.quizTitle,
     required this.quizId,
     required this.score,
     this.createdAt,
@@ -20,6 +22,7 @@ class QuizResultModel {
   Map<String, dynamic> toMap() {
     return {
       "userId": userId,
+      'quizTitle': quizTitle,
       "quizId": quizId,
       "score": score,
       "createdAt": FieldValue.serverTimestamp(),
@@ -31,6 +34,7 @@ class QuizResultModel {
     return QuizResultModel(
       id: id,
       userId: data['userId'] ?? '',
+      quizTitle: data['quizTitle'] ?? '',
       quizId: data['quizId'] ?? '',
       score: data['score'] ?? 0,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
