@@ -71,7 +71,6 @@ class HomeView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -163,13 +162,10 @@ class HomeView extends StatelessWidget {
                                   child: QuizzesCard(
                                     quiz: quiz,
                                     onTap: () {
-                                      if (controller.userRole.value !=
-                                          'teacher') {
-                                        Get.toNamed(
-                                          '/quizPreview',
-                                          arguments: quiz,
-                                        );
-                                      }
+                                      Get.toNamed(
+                                        '/quizPreview',
+                                        arguments: quiz,
+                                      );
                                     },
                                   ),
                                 );

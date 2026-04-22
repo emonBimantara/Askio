@@ -16,7 +16,7 @@ class QuizService {
       if (teacherId != null) {
         query = query.where('teacherId', isEqualTo: teacherId);
       } else if (studentId != null) {
-        query = query.where('participants', arrayContains: studentId);
+        query = query.where('participantIds', arrayContains: studentId);
       } else {
         return [];
       }
@@ -36,7 +36,11 @@ class QuizService {
     }
   }
 
-  Future<bool> joinQuizByCode(String quizCode, String studentId) async {
+  Future<bool> joinQuizByCode(
+    String quizCode,
+    String studentId,
+    String studentName,
+  ) async {
     try {
       final snapshot = await _db
           .collection('quizzes')
@@ -52,13 +56,21 @@ class QuizService {
       final quizDoc = snapshot.docs.first;
       final List participants = quizDoc.data()['participants'] ?? [];
 
-      if (participants.contains(studentId)) {
+      bool isAlreadyJoined = participants.any((p) {
+        if (p is Map) return p['uid'] == studentId;
+        return p == studentId;
+      });
+
+      if (isAlreadyJoined) {
         Get.snackbar("Info", "You have already joined this quiz");
         return false;
       }
 
       await _db.collection('quizzes').doc(quizDoc.id).update({
-        'participants': FieldValue.arrayUnion([studentId]),
+        'participants': FieldValue.arrayUnion([
+          {'uid': studentId, 'name': studentName},
+        ]),
+        'participantIds': FieldValue.arrayUnion([studentId]),
       });
 
       return true;
@@ -134,6 +146,7 @@ class AddQuizService {
       'quizCode': quizCode,
       'totalQuestions': questions.length,
       'participants': [],
+      'participantIds': [],
       'createdAt': FieldValue.serverTimestamp(),
     });
 

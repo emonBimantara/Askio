@@ -1,26 +1,31 @@
 import 'package:askio/Components/custom_button.dart';
 import 'package:askio/Features/Home/Model/quiz_model.dart';
+import 'package:askio/Features/Home/Controller/home_controller.dart'; 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class QuizPreviewPage extends StatelessWidget {
   final QuizModel quiz;
 
-  const QuizPreviewPage({super.key, required this.quiz});
+  QuizPreviewPage({super.key, required this.quiz});
+
+  final HomeController homeController = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
+    final bool isTeacher = homeController.userRole.value == 'teacher';
+
     return Scaffold(
       body: Column(
         children: [
           const SizedBox(height: 20),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
             child: Row(
               children: [
-                BackButton(),
-                SizedBox(width: 10),
-                Text('Quiz Detail', style: TextStyle(fontSize: 20)),
+                const BackButton(),
+                const SizedBox(width: 10),
+                const Text('Quiz Detail', style: TextStyle(fontSize: 20)),
               ],
             ),
           ),
@@ -79,41 +84,112 @@ class QuizPreviewPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 10),
-                  Text(
-                    'Please read the text below carefully so you can understand it',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
+                  const SizedBox(height: 10),
 
-                  SizedBox(height: 25),
-
-                  ...quiz.rules.map((rule) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Text.rich(
-                        TextSpan(
-                          children: [
-                            const TextSpan(
-                              text: "• ",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            TextSpan(
-                              text: rule.replaceAll('\n', ' '),
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                          ],
+                  if (isTeacher) ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Participants List',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                         ),
-                      ),
-                    );
-                  }).toList(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2120FF).withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            "${quiz.participants.length} Joined",
+                            style: const TextStyle(color: Color(0xFF2120FF), fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 20),
 
-                  Spacer(),
-                  CustomButton(
-                    onTap: () => {
-                      Get.toNamed('/questionPage', arguments: quiz,)
-                    },
-                    customText: 'Start Quiz'
-                  )
+                    Expanded(
+                      child: quiz.participants.isEmpty
+                          ? const Center(
+                              child: Text("No students have joined yet.", style: TextStyle(color: Colors.grey)),
+                            )
+                          : ListView.builder(
+                              itemCount: quiz.participants.length,
+                              itemBuilder: (context, index) {
+                                final participant = quiz.participants[index];
+                                
+                                // Ekstrak namanya dari Map (sesuai perubahan struktur kita)
+                                String participantName = "Unknown Student";
+                                if (participant is Map) {
+                                  participantName = participant['name'] ?? "Unknown";
+                                } else {
+                                  participantName = participant.toString(); 
+                                }
+
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 15),
+                                  padding: const EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF9F9F9),
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(color: Colors.grey.shade200),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const CircleAvatar(
+                                        backgroundColor: Color(0xFF2120FF),
+                                        child: Icon(Icons.person, color: Colors.white),
+                                      ),
+                                      const SizedBox(width: 15),
+                                      Expanded(
+                                        child: Text(
+                                          participantName,
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  ] else ...[
+                    // --- TAMPILAN KHUSUS STUDENT ---
+                    const Text(
+                      'Please read the text below carefully so you can understand it',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 25),
+
+                    ...quiz.rules.map((rule) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              const TextSpan(
+                                text: "• ",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              TextSpan(
+                                text: rule.replaceAll('\n', ' '),
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+
+                    const Spacer(),
+                    CustomButton(
+                      onTap: () => {
+                        Get.toNamed('/questionPage', arguments: quiz,)
+                      },
+                      customText: 'Start Quiz'
+                    )
+                  ],
                 ],
               ),
             ),

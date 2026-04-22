@@ -5,6 +5,7 @@ class QuizModel {
   final int totalQuestions;
   final List<String> rules;
   final String teacherId;
+  final List<dynamic> participants;
 
   QuizModel({
     required this.id,
@@ -13,6 +14,7 @@ class QuizModel {
     required this.totalQuestions,
     required this.rules,
     required this.teacherId,
+    required this.participants
   });
 
   factory QuizModel.fromFirestore(String id, Map<String, dynamic> data) {
@@ -25,6 +27,7 @@ class QuizModel {
           .map((e) => e.toString())
           .toList(),
       teacherId: data['teacherId'] ?? '',
+      participants: data['participants'] ?? [],
     );
   }
 }

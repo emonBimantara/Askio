@@ -13,7 +13,7 @@ class HomeController extends GetxController {
   var quizzes = <QuizModel>[].obs;
   var isLoading = true.obs;
   var userRole = 'student'.obs;
-  
+
   final TextEditingController codeController = TextEditingController();
 
   @override
@@ -55,26 +55,33 @@ class HomeController extends GetxController {
     } catch (e) {
       Get.snackbar("Error", "Failed to delete the quiz");
     }
-  }  
+  }
 
   Future<void> joinQuiz() async {
     final code = codeController.text.trim();
     final user = authController.user;
 
     if (code.isEmpty) {
-      Get.snackbar("Peringatan", "Kode tidak boleh kosong");
+      Get.snackbar("Warning", "Code is not belong to empty");
       return;
     }
 
     if (user != null) {
       isLoading(true);
-      bool success = await _quizService.joinQuizByCode(code, user.uid);
+      String studentName =
+          user.displayName ?? "Student ${user.uid.substring(0, 4)}";
+
+      bool success = await _quizService.joinQuizByCode(
+        code,
+        user.uid,
+        studentName,
+      );
 
       if (success) {
         codeController.clear();
-        Get.back(); 
+        Get.back();
         await refreshQuizzes();
-        Get.snackbar("Berhasil", "Kamu berhasil join kuis!");
+        Get.snackbar("Success", "You successfuly join a quiz!");
       }
       isLoading(false);
     }
