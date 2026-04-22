@@ -8,6 +8,8 @@ class QuestionController extends GetxController {
   var currentIndex = 0.obs;
   var userAnswers = <int?>[].obs;
 
+  var isSubmitting = false.obs;
+
   void setQuestions(List<QuestionModel> qList) {
     questions.value = qList;
     userAnswers.value = List.filled(qList.length, null);

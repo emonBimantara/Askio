@@ -6,10 +6,15 @@ class QuizResultService {
 
   Future<void> saveQuiz(QuizResultModel result) async {
     try {
-      await db.collection('user_results').add(result.toMap());
+      String uniqueDocId = "${result.userId}_${result.quizId}";
+
+      await db
+          .collection('user_results')
+          .doc(uniqueDocId)
+          .set(result.toMap()); 
+          
     } catch (e) {
       print("ERROR saveQuiz: $e");
-      rethrow;
     }
   }
 
