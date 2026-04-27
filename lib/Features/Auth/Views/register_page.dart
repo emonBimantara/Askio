@@ -17,7 +17,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController = TextEditingController();
 
-  // State untuk menyimpan pilihan role, default: student
   String selectedRole = 'student'; 
 
   final AuthController authController = Get.find();
@@ -74,9 +73,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 20),
 
-              // Dropdown untuk memilih Role
               DropdownButtonFormField<String>(
-                value: selectedRole,
+                initialValue: selectedRole,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: const Color(0xFFF7F8F9), 
@@ -123,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       emailController.text,
                       passwordController.text,
                       passwordConfirmController.text,
-                      selectedRole, // Kirim role ke controller
+                      selectedRole, 
                     );
                   },
                 ),

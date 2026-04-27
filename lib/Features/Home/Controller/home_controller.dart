@@ -13,6 +13,8 @@ class HomeController extends GetxController {
   var quizzes = <QuizModel>[].obs;
   var isLoading = true.obs;
   var userRole = 'student'.obs;
+  
+  var userName = 'User'.obs; 
 
   final TextEditingController codeController = TextEditingController();
 
@@ -27,6 +29,8 @@ class HomeController extends GetxController {
       isLoading(true);
       final user = authController.user;
       if (user != null) {
+        userName.value = user.displayName ?? "User";
+        
         userRole.value = await _userService.getUserRole(user.uid);
         await refreshQuizzes();
       }
@@ -68,8 +72,8 @@ class HomeController extends GetxController {
 
     if (user != null) {
       isLoading(true);
-      String studentName =
-          user.displayName ?? "Student ${user.uid.substring(0, 4)}";
+      
+      String studentName = userName.value;
 
       bool success = await _quizService.joinQuizByCode(
         code,

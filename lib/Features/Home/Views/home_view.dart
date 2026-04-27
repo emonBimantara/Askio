@@ -28,7 +28,7 @@ class HomeView extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Good Evening, ${user?.displayName ?? "User"}"),
+                    Text("Welcome, ${controller.userName.value}"),
                     const SizedBox(height: 5),
                     const Text(
                       "Let's test your knowledge",
@@ -40,10 +40,26 @@ class HomeView extends StatelessWidget {
                   ],
                 ),
                 GestureDetector(
-                  onTap: controller.authController.logout,
+                  onTap: () {
+                    Get.defaultDialog(
+                      title: "Logout",
+                      titleStyle: const TextStyle(fontWeight: FontWeight.bold),
+                      middleText: "Are you sure you want to log out?",
+                      textConfirm: "Yes, Logout",
+                      textCancel: "Cancel",
+                      confirmTextColor: Colors.white,
+                      buttonColor: Colors.redAccent,
+                      cancelTextColor: const Color(0xFF2120FF),
+                      radius: 15,
+                      onConfirm: () {
+                        Get.back();
+                        controller.authController.logout(); 
+                      },
+                    );
+                  },
                   child: const CircleAvatar(
                     radius: 22,
-                    child: Icon(Icons.person),
+                    child: Icon(Icons.logout, size: 20),
                   ),
                 ),
               ],

@@ -61,13 +61,13 @@ class AuthController extends GetxController {
         email: email,
         password: password,
       );
+      await credential.user?.sendEmailVerification();
 
       await credential.user?.updateDisplayName(username);
 
       await credential.user?.reload();
       firebaseUser.value = auth.currentUser;
 
-      // adding role to firestore
       await firestore.collection('users').doc(credential.user!.uid).set({
         'username': username,
         'email': email,
@@ -90,7 +90,20 @@ class AuthController extends GetxController {
   void setInitialScreen(User? user) async {
     await Future.delayed(const Duration(seconds: 3));
 
+    isLoading.value = false;
+
     if (user == null) {
+      Get.offAllNamed('/login');
+    } else if (!user.emailVerified) {
+      await auth.signOut();
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.snackbar(
+          "Verify Email",
+          "Please check your email and verify your account first",
+        );
+      });
+
       Get.offAllNamed('/login');
     } else {
       Get.offAllNamed('/home');

@@ -81,25 +81,6 @@ class _LoginPageState extends State<LoginPage> {
 
               SizedBox(height: 40),
 
-              Row(
-                children: [
-                  Expanded(child: Divider(thickness: 1)),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      'Or Login With',
-                      style: TextStyle(
-                        color: Color(0xFF4F4F4F),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Expanded(child: Divider(thickness: 1)),
-                ],
-              ),
-
-              SizedBox(height: 40),
-
               GestureDetector(
                 onTap: () => Get.toNamed("/register"),
                 child: Row(
