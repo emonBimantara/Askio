@@ -120,10 +120,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   isLoading: authController.isLoading.value,
                   onTap: () {
                     authController.register(
-                      usernameController.text,
-                      emailController.text,
-                      passwordController.text,
-                      passwordConfirmController.text,
+                      usernameController.text.trim(),
+                      emailController.text.trim(),
+                      passwordController.text.trim(),
+                      passwordConfirmController.text.trim(),
                       selectedRole,
                     );
                   },

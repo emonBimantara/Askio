@@ -57,17 +57,12 @@ class AuthController extends GetxController {
 
     try {
       isLoading.value = true;
+      isNavigating = true;
 
       UserCredential credential = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      await credential.user?.sendEmailVerification();
-
-      await credential.user?.updateDisplayName(username);
-
-      await credential.user?.reload();
-      firebaseUser.value = auth.currentUser;
 
       await firestore.collection('users').doc(credential.user!.uid).set({
         'username': username,
@@ -76,11 +71,19 @@ class AuthController extends GetxController {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      Get.snackbar("Success", "Successfully registered");
+      await credential.user?.sendEmailVerification();
+      await credential.user?.updateDisplayName(username);
+      await credential.user?.reload();
+
+      firebaseUser.value = auth.currentUser;
+
+      Get.snackbar("Success", "Please check your email to verify the registration");
+      await logout();
     } on FirebaseAuthException catch (e) {
       Get.snackbar("Error", _registerError(e.code));
     } finally {
       isLoading.value = false;
+      isNavigating = false;
     }
   }
 
@@ -113,7 +116,6 @@ class AuthController extends GetxController {
 
   void setInitialScreen(User? user) async {
     if (isNavigating) return;
-    isNavigating = true;
 
     await Future.delayed(const Duration(seconds: 1));
 
@@ -122,7 +124,6 @@ class AuthController extends GetxController {
       Get.offAllNamed('/login');
     } else if (!user.emailVerified) {
       await auth.signOut();
-
       Get.offAllNamed('/login');
 
       Future.delayed(const Duration(milliseconds: 300), () {
