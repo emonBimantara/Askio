@@ -30,9 +30,8 @@ class AuthController extends GetxController {
       isLoading.value = true;
       await auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
-      Get.snackbar("Error", _loginError(e.code));
-    } finally {
       isLoading.value = false;
+      Get.snackbar("Error", _loginError(e.code));
     }
   }
 
@@ -118,9 +117,8 @@ class AuthController extends GetxController {
 
     await Future.delayed(const Duration(seconds: 1));
 
-    isLoading.value = false;
-
     if (user == null) {
+      isLoading.value = false;
       Get.offAllNamed('/login');
     } else if (!user.emailVerified) {
       await auth.signOut();
@@ -135,6 +133,9 @@ class AuthController extends GetxController {
       });
     } else {
       Get.offAllNamed('/home');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        isLoading.value = false;
+      });
     }
 
     Future.delayed(const Duration(milliseconds: 500), () {

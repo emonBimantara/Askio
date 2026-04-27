@@ -13,6 +13,7 @@ class HomeController extends GetxController {
   var quizzes = <QuizModel>[].obs;
   var isLoading = true.obs;
   var userRole = 'student'.obs;
+  var isLoggingOut = false.obs;
   
   var userName = 'User'.obs; 
 
