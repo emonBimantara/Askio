@@ -1,4 +1,5 @@
 import 'package:askio/Components/custom_button.dart';
+import 'package:askio/Components/custom_dropdown.dart';
 import 'package:askio/Components/custom_textfield.dart';
 import 'package:askio/Features/Auth/Controller/auth_controller.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,16 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController passwordConfirmController = TextEditingController();
+  final TextEditingController passwordConfirmController =
+      TextEditingController();
 
-  String selectedRole = 'student'; 
+  String selectedRole = 'student';
 
   final AuthController authController = Get.find();
+
+  // 🔥 state toggle
+  bool isPasswordHidden = true;
+  bool isConfirmPasswordHidden = true;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +45,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 30),
 
+              // USERNAME
               CustomTextfield(
                 hintText: "Username",
                 obscureText: false,
@@ -47,6 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 20),
 
+              // EMAIL
               CustomTextfield(
                 hintText: "Enter your email",
                 obscureText: false,
@@ -55,56 +63,51 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 20),
 
+              // PASSWORD
               CustomTextfield(
                 hintText: "Enter your password",
-                obscureText: true,
+                obscureText: isPasswordHidden,
                 controller: passwordController,
-                suffixIconPath: 'assets/icons/eye.png',
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isPasswordHidden = !isPasswordHidden;
+                    });
+                  },
+                  child: Icon(
+                    isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                  ),
+                ),
               ),
 
               const SizedBox(height: 20),
 
+              // CONFIRM PASSWORD
               CustomTextfield(
                 hintText: "Confirm your password",
-                obscureText: true,
+                obscureText: isConfirmPasswordHidden,
                 controller: passwordConfirmController,
-                suffixIconPath: 'assets/icons/eye.png',
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isConfirmPasswordHidden = !isConfirmPasswordHidden;
+                    });
+                  },
+                  child: Icon(
+                    isConfirmPasswordHidden
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                  ),
+                ),
               ),
 
               const SizedBox(height: 20),
 
-              DropdownButtonFormField<String>(
-                initialValue: selectedRole,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: const Color(0xFFF7F8F9), 
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFFE8ECF4)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFFE8ECF4)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF2120FF)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                ),
-                items: const [
-                  DropdownMenuItem(
-                    value: 'student',
-                    child: Text('Register as Student', style: TextStyle(color: Colors.black87)),
-                  ),
-                  DropdownMenuItem(
-                    value: 'teacher',
-                    child: Text('Register as Teacher', style: TextStyle(color: Colors.black87)),
-                  ),
-                ],
-                onChanged: (String? newValue) {
+              CustomDropdown(
+                value: selectedRole,
+                onChanged: (value) {
                   setState(() {
-                    selectedRole = newValue!;
+                    selectedRole = value!;
                   });
                 },
               ),
@@ -121,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       emailController.text,
                       passwordController.text,
                       passwordConfirmController.text,
-                      selectedRole, 
+                      selectedRole,
                     );
                   },
                 ),

@@ -1,4 +1,5 @@
 import 'package:askio/Features/Auth/Controller/auth_controller.dart';
+import 'package:askio/Features/Auth/Views/forgot_email_page.dart';
 import 'package:askio/Features/Auth/Views/login_page.dart';
 import 'package:askio/Features/Auth/Views/register_page.dart';
 import 'package:askio/Features/Home/Model/quiz_model.dart';
@@ -50,7 +51,8 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/questionPage', 
           page: () => QuestionPage(quiz: Get.arguments as QuizModel)
-        )
+        ),
+        GetPage(name: '/forgotEmailPage', page: () => ForgotEmailPage())
       ],
     );
   }

@@ -11,6 +11,8 @@ class AuthController extends GetxController {
 
   User? get user => firebaseUser.value;
 
+  bool isNavigating = false;
+
   @override
   void onInit() {
     super.onInit();
@@ -83,12 +85,38 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> resetPassword(String email) async {
+    if (email.isEmpty) {
+      Get.snackbar("Error", "Email cannot be empty");
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      await auth.sendPasswordResetEmail(email: email.trim());
+
+      Get.snackbar("Success", "Password reset link sent. Check your email.");
+
+      Future.delayed(const Duration(milliseconds: 300), () {
+        Get.offAllNamed('/login');
+      });
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar("Error", _resetError(e.code));
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   Future<void> logout() async {
     await auth.signOut();
   }
 
   void setInitialScreen(User? user) async {
-    await Future.delayed(const Duration(seconds: 3));
+    if (isNavigating) return;
+    isNavigating = true;
+
+    await Future.delayed(const Duration(seconds: 1));
 
     isLoading.value = false;
 
@@ -97,17 +125,21 @@ class AuthController extends GetxController {
     } else if (!user.emailVerified) {
       await auth.signOut();
 
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Get.offAllNamed('/login');
+
+      Future.delayed(const Duration(milliseconds: 300), () {
         Get.snackbar(
           "Verify Email",
           "Please check your email and verify your account first",
         );
       });
-
-      Get.offAllNamed('/login');
     } else {
       Get.offAllNamed('/home');
     }
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      isNavigating = false;
+    });
   }
 
   String _loginError(String errorCode) {
@@ -135,6 +167,17 @@ class AuthController extends GetxController {
         return 'Invalid email format';
       default:
         return 'Registration failed, please try again';
+    }
+  }
+
+  String _resetError(String errorCode) {
+    switch (errorCode) {
+      case 'user-not-found':
+        return 'Email is not registered';
+      case 'invalid-email':
+        return 'Invalid email format';
+      default:
+        return 'Failed to send reset email';
     }
   }
 }

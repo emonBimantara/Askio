@@ -17,54 +17,74 @@ class _LoginPageState extends State<LoginPage> {
 
   final AuthController authController = Get.find();
 
+  bool isPasswordHidden = true; // 🔥 state toggle
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-              Text(
+              const Text(
                 'Welcome Back! Glad To See You, Again!',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
 
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
 
+              // EMAIL
               CustomTextfield(
                 hintText: "Enter your email",
                 obscureText: false,
                 controller: emailController,
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
+              // PASSWORD
               CustomTextfield(
                 hintText: "Enter your password",
-                obscureText: true,
+                obscureText: isPasswordHidden,
                 controller: passwordController,
-                suffixIconPath: 'assets/icons/eye.png',
-              ),
-
-              SizedBox(height: 20),
-
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  'Forgot Password?',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF4F4F4F),
-                    fontSize: 14,
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isPasswordHidden = !isPasswordHidden;
+                    });
+                  },
+                  child: Icon(
+                    isPasswordHidden
+                        ? Icons.visibility_off
+                        : Icons.visibility,
                   ),
                 ),
               ),
 
-              SizedBox(height: 25),
+              const SizedBox(height: 20),
+
+              Align(
+                alignment: Alignment.bottomRight,
+                child: GestureDetector(
+                  onTap: () {
+                    Get.toNamed("/forgotEmailPage");
+                  },
+                  child: const Text(
+                    'Forgot Password?',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF4F4F4F),
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 25),
 
               Obx(
                 () => CustomButton(
@@ -79,13 +99,13 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
 
               GestureDetector(
                 onTap: () => Get.toNamed("/register"),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Text(
                       "Don't have an account?",
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -102,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ],
           ),
         ),

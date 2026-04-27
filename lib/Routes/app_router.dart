@@ -1,3 +1,4 @@
+import 'package:askio/Features/Auth/Views/forgot_email_page.dart';
 import 'package:askio/Features/Auth/Views/login_page.dart';
 import 'package:askio/Features/Auth/Views/register_page.dart';
 import 'package:askio/Features/Home/Model/quiz_model.dart';
@@ -31,6 +32,8 @@ class AppRouter {
       case AppRoutes.questionPage:
         final quiz = settings.arguments as QuizModel;
         return MaterialPageRoute(builder: (_) => QuestionPage(quiz: quiz));
+      case AppRoutes.forgotEmailPage:
+        return MaterialPageRoute(builder: (_) => ForgotEmailPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(body: Center(child: Text("Page Not Found"))),

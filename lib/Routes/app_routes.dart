@@ -1,6 +1,5 @@
 class AppRoutes {
   static const String splashPage = "/splash";
-  // static const String onboardingPage = "/onboarding";
   static const String loginPage = "/login";
   static const String registerPage = "register";
   static const String homePage = "/home";
@@ -8,4 +7,5 @@ class AppRoutes {
   static const String quizPreviewPage = "/quizPreview";
   static const String questionPage = "/questionPage";
   static const String resultPage = "/resultPage";
+  static const String forgotEmailPage = "/forgotEmailPage";
 }

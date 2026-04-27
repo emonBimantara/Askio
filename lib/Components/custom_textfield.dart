@@ -5,7 +5,7 @@ class CustomTextfield extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool obscureText;
   final TextEditingController controller;
-  final String? suffixIconPath;
+  final Widget? suffixIcon;
 
   const CustomTextfield({
     super.key,
@@ -13,7 +13,7 @@ class CustomTextfield extends StatelessWidget {
     this.keyboardType,
     required this.obscureText,
     required this.controller,
-    this.suffixIconPath,
+    this.suffixIcon,
   });
 
   @override
@@ -26,12 +26,7 @@ class CustomTextfield extends StatelessWidget {
         hintText: hintText,
         filled: true,
         fillColor: Colors.white,
-        suffixIcon: suffixIconPath != null
-            ? Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Image.asset(suffixIconPath!, width: 20, height: 20),
-              )
-            : null,
+        suffixIcon: suffixIcon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide.none,
