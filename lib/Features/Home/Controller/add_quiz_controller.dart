@@ -37,7 +37,7 @@ class AddQuizController extends GetxController {
 
   Future<void> saveQuiz() async {
     if (titleController.text.isEmpty || durationController.text.isEmpty) {
-      Get.snackbar("Error", "Isi dulu judul sama durasinya, Mon!");
+      Get.snackbar("Error", "Please fill in the title and duration first.");
       return;
     }
 
@@ -47,7 +47,7 @@ class AddQuizController extends GetxController {
 
       List<String> rulesList = rulesController.text.isNotEmpty
           ? rulesController.text.split(',').map((e) => e.trim()).toList()
-          : ["Baca doa sebelum mengerjakan"];
+          : ["Read each question carefully before answering."];
 
       await _service.uploadQuiz(
         title: titleController.text,
@@ -63,11 +63,11 @@ class AddQuizController extends GetxController {
 
       Get.back();
       Get.snackbar(
-        "Berhasil",
-        "Kuis berhasil diupload! Share kodenya ke siswa ya.",
+        "Success",
+        "Quiz uploaded successfully! Share the code with your students.",
       );
     } catch (e) {
-      Get.snackbar("Error", "Gagal upload: $e");
+      Get.snackbar("Error", "Upload failed: $e");
     } finally {
       isLoading(false);
     }
@@ -78,6 +78,7 @@ class AddQuizController extends GetxController {
     titleController.dispose();
     durationController.dispose();
     rulesController.dispose();
+
     for (var q in questions) {
       (q['questionText'] as TextEditingController).dispose();
       (q['optionA'] as TextEditingController).dispose();
@@ -85,6 +86,7 @@ class AddQuizController extends GetxController {
       (q['optionC'] as TextEditingController).dispose();
       (q['optionD'] as TextEditingController).dispose();
     }
+
     super.onClose();
   }
 }

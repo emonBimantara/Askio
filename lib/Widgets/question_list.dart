@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:askio/Features/Home/Controller/quiz_controller.dart';
+import 'package:askio/Features/Home/Controller/add_quiz_controller.dart';
 import 'option_rows.dart';
 
 class QuestionList extends StatelessWidget {

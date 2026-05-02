@@ -1,4 +1,4 @@
-import 'package:askio/Features/Home/Controller/quiz_controller.dart';
+import 'package:askio/Features/Home/Controller/add_quiz_controller.dart';
 import 'package:askio/Widgets/action_buttons.dart';
 import 'package:askio/Widgets/question_list.dart';
 import 'package:askio/Widgets/quiz_info_card.dart';

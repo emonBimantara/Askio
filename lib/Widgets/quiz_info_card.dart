@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:askio/Features/Home/Controller/quiz_controller.dart'; 
+import 'package:askio/Features/Home/Controller/add_quiz_controller.dart'; 
 
 class QuizInfoCard extends StatelessWidget {
   final AddQuizController controller;

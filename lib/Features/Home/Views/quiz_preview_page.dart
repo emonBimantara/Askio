@@ -12,6 +12,8 @@ class QuizPreviewPage extends StatelessWidget {
 
   final HomeController homeController = Get.find<HomeController>();
 
+  final isCopied = false.obs;
+
   @override
   Widget build(BuildContext context) {
     final bool isTeacher = homeController.userRole.value == 'teacher';
@@ -93,6 +95,7 @@ class QuizPreviewPage extends StatelessWidget {
                       style: TextStyle(color: Colors.grey, fontSize: 14),
                     ),
                     const SizedBox(height: 10),
+
                     Container(
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
@@ -130,31 +133,32 @@ class QuizPreviewPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          IconButton(
-                            onPressed: () {
-                              Clipboard.setData(
-                                ClipboardData(text: quiz.quizCode),
-                              );
-                              Get.snackbar(
-                                "Copied!",
-                                "Quiz code copied to clipboard",
-                                snackPosition: SnackPosition.BOTTOM,
-                                backgroundColor: const Color(0xFF2120FF),
-                                colorText: Colors.white,
-                                margin: const EdgeInsets.all(15),
-                                duration: const Duration(seconds: 2),
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.copy_rounded,
-                              color: Color(0xFF2120FF),
-                            ),
-                            style: IconButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shadowColor: Colors.black12,
-                              elevation: 2,
-                            ),
-                          ),
+
+                          Obx(() => IconButton(
+                                onPressed: () {
+                                  Clipboard.setData(
+                                    ClipboardData(text: quiz.quizCode),
+                                  );
+
+                                  isCopied.value = true;
+
+                                  Future.delayed(
+                                      const Duration(seconds: 2), () {
+                                    isCopied.value = false;
+                                  });
+                                },
+                                icon: Icon(
+                                  isCopied.value
+                                      ? Icons.check_rounded
+                                      : Icons.copy_rounded,
+                                  color: const Color(0xFF2120FF),
+                                ),
+                                style: IconButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  shadowColor: Colors.black12,
+                                  elevation: 2,
+                                ),
+                              )),
                         ],
                       ),
                     ),
@@ -218,22 +222,26 @@ class QuizPreviewPage extends StatelessWidget {
                               itemCount: quiz.participants.length,
                               padding: const EdgeInsets.only(top: 5),
                               itemBuilder: (context, index) {
-                                final participant = quiz.participants[index];
+                                final participant =
+                                    quiz.participants[index];
 
                                 String participantName = "Unknown Student";
                                 if (participant is Map) {
                                   participantName =
                                       participant['name'] ?? "Unknown";
                                 } else {
-                                  participantName = participant.toString();
+                                  participantName =
+                                      participant.toString();
                                 }
 
                                 return Container(
-                                  margin: const EdgeInsets.only(bottom: 15),
+                                  margin:
+                                      const EdgeInsets.only(bottom: 15),
                                   padding: const EdgeInsets.all(15),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFFF9F9F9),
-                                    borderRadius: BorderRadius.circular(15),
+                                    borderRadius:
+                                        BorderRadius.circular(15),
                                     border: Border.all(
                                       color: Colors.grey.shade200,
                                     ),
@@ -241,7 +249,8 @@ class QuizPreviewPage extends StatelessWidget {
                                   child: Row(
                                     children: [
                                       const CircleAvatar(
-                                        backgroundColor: Color(0xFF2120FF),
+                                        backgroundColor:
+                                            Color(0xFF2120FF),
                                         child: Icon(
                                           Icons.person,
                                           color: Colors.white,
@@ -252,7 +261,8 @@ class QuizPreviewPage extends StatelessWidget {
                                         child: Text(
                                           participantName,
                                           style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
+                                            fontWeight:
+                                                FontWeight.bold,
                                             fontSize: 16,
                                           ),
                                         ),
@@ -295,8 +305,8 @@ class QuizPreviewPage extends StatelessWidget {
 
                     const Spacer(),
                     CustomButton(
-                      onTap: () => {
-                        Get.toNamed('/questionPage', arguments: quiz),
+                      onTap: () {
+                        Get.toNamed('/questionPage', arguments: quiz);
                       },
                       customText: 'Start Quiz',
                     ),

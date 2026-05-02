@@ -5,6 +5,7 @@ import '../Features/Home/Controller/home_controller.dart';
 void showLogoutDialog(HomeController controller) {
   Get.dialog(
     Dialog(
+      backgroundColor: const Color(0xFFF5EDE2),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(25),

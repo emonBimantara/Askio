@@ -6,6 +6,7 @@ import 'package:askio/Features/Home/Model/quiz_model.dart';
 import 'package:askio/Features/Quiz/Controller/question_controller.dart';
 import 'package:askio/Features/Quiz/Model/question_model.dart';
 import 'package:askio/Features/Quiz/Services/question_service.dart';
+import 'package:askio/Widgets/submit_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -22,11 +23,7 @@ class QuestionPage extends StatelessWidget {
 
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) {
-          controller.reset(); 
-        }
-      },
+      onPopInvokedWithResult: (didPop, result) {},
       child: Scaffold(
         body: SafeArea(
           child: FutureBuilder<List<QuestionModel>>(
@@ -47,6 +44,12 @@ class QuestionPage extends StatelessWidget {
               if (controller.questions.isEmpty) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   controller.setQuestions(snapshot.data!);
+                  controller.startTimer(
+                    quiz.duration,
+                    quizId: quiz.id,
+                    userId: authController.user!.uid,
+                    quizTitle: quiz.title,
+                  );
                 });
               }
 
@@ -55,40 +58,86 @@ class QuestionPage extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                final questions = controller.questions;
                 final currentIndex = controller.currentIndex.value;
-                final currentQuestion = questions[currentIndex];
-                final isLastQuestion = currentIndex == questions.length - 1;
-                final selectedAnswer = controller.userAnswers[currentIndex];
+                final currentQuestion = controller.questions[currentIndex];
+                final isLastQuestion =
+                    currentIndex == controller.questions.length - 1;
 
                 return Stack(
                   children: [
-                    
                     Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          child: Column(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 20,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const SizedBox(height: 20),
                               Text(
-                                "Question ${currentIndex + 1}/${questions.length}",
-                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                "Question ${currentIndex + 1}/${controller.questions.length}",
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: controller.remainingSeconds.value < 60
+                                      ? Colors.red.withValues(alpha: 0.1)
+                                      : const Color(
+                                          0xFF2120FF,
+                                        ).withValues(alpha:0.1),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.timer_outlined,
+                                      size: 18,
+                                      color:
+                                          controller.remainingSeconds.value < 60
+                                          ? Colors.red
+                                          : const Color(0xFF2120FF),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Text(
+                                      controller.formattedTime,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            controller.remainingSeconds.value <
+                                                60
+                                            ? Colors.red
+                                            : const Color(0xFF2120FF),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
                         Expanded(
                           child: Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 25,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(35),
+                              ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
+                                  color: Colors.black.withValues(alpha: 0.05),
                                   blurRadius: 10,
                                 ),
                               ],
@@ -97,74 +146,54 @@ class QuestionPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 QuestionNumberBar(),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 25),
                                 Text(
                                   currentQuestion.questionText,
-                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, height: 1.4),
+                                  style: const TextStyle(
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.4,
+                                  ),
                                 ),
                                 const SizedBox(height: 25),
                                 Expanded(
                                   child: ListView.builder(
                                     itemCount: currentQuestion.options.length,
                                     itemBuilder: (context, index) {
-                                      final isSelected = selectedAnswer == index;
                                       return AnswerBar(
                                         text: currentQuestion.options[index],
-                                        isSelected: isSelected,
-                                        onTap: () {
-                                          controller.inputAnswer(currentIndex, index);
-                                        },
+                                        isSelected:
+                                            controller
+                                                .userAnswers[currentIndex] ==
+                                            index,
+                                        onTap: () => controller.inputAnswer(
+                                          currentIndex,
+                                          index,
+                                        ),
                                       );
                                     },
                                   ),
                                 ),
-                                
                                 CustomButton(
-                                  customText: controller.isSubmitting.value 
-                                      ? "Submitting..." 
-                                      : (isLastQuestion ? "Finish Quiz" : "Next Question"),
-                                  
-                                  onTap: controller.isSubmitting.value ? null : () async {
-                                    if (!isLastQuestion) {
-                                      controller.nextQuestion();
-                                    } else {
-                                      if (!controller.allAnswered) {
-                                        Get.snackbar("Warning", "Fill all the questions before submitting.");
-                                        return;
-                                      }
-
-                                      Get.defaultDialog(
-                                        title: "Submit Quiz",
-                                        titleStyle: const TextStyle(fontWeight: FontWeight.bold),
-                                        middleText: "Are you sure you want to finish and submit this quiz? You cannot change your answers afterward.",
-                                        textConfirm: "Yes, Submit",
-                                        textCancel: "Cancel",
-                                        confirmTextColor: Colors.white,
-                                        buttonColor: const Color(0xFF2120FF),
-                                        cancelTextColor: const Color(0xFF2120FF),
-                                        radius: 15,
-                                        
-                                        onConfirm: () async {
-                                          Get.back(); 
-
-                                          controller.isSubmitting.value = true;
-
-                                          final finalScore = controller.calculateScore();
-
-                                          await controller.submitQuiz(
-                                            quizId: quiz.id,
-                                            userId: authController.user!.uid,
-                                            quizTitle: quiz.title,
-                                          );
-
-                                          Get.snackbar("Quiz Finished", "Your score: $finalScore");
-                                          Get.offAllNamed('/home');
-                                          
-                                          controller.reset(); 
+                                  customText: controller.isSubmitting.value
+                                      ? "Submitting..."
+                                      : (isLastQuestion
+                                            ? "Finish Quiz"
+                                            : "Next Question"),
+                                  onTap: controller.isSubmitting.value
+                                      ? null
+                                      : () async {
+                                          if (!isLastQuestion) {
+                                            controller.nextQuestion();
+                                          } else {
+                                            showSubmitDialog(
+                                              controller: controller,
+                                              quizId: quiz.id,
+                                              quizTitle: quiz.title,
+                                              userId: authController.user!.uid,
+                                            );
+                                          }
                                         },
-                                      );
-                                    }
-                                  },
                                 ),
                               ],
                             ),
@@ -172,31 +201,26 @@ class QuestionPage extends StatelessWidget {
                         ),
                       ],
                     ),
-
                     if (controller.isSubmitting.value)
-                      Positioned.fill(
-                        child: Container(
-                          color: Colors.black.withOpacity(0.6),
-                          child: const Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CircularProgressIndicator(color: Colors.white),
-                                SizedBox(height: 20),
-                                Text(
-                                  "Submitting your answers...",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ), 
+                      Container(
+                        color: Colors.black.withValues(alpha: 0.6),
+                        child: const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(color: Colors.white),
+                              SizedBox(height: 20),
+                              Text(
+                                "Calculating your results...",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      
                   ],
                 );
               });
