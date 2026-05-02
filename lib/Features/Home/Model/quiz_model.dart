@@ -3,6 +3,7 @@ class QuizModel {
   final int duration;
   final String title;
   final int totalQuestions;
+  final String quizCode;
   final List<String> rules;
   final String teacherId;
   final List<dynamic> participants;
@@ -12,6 +13,7 @@ class QuizModel {
     required this.duration,
     required this.title,
     required this.totalQuestions,
+    required this.quizCode,
     required this.rules,
     required this.teacherId,
     required this.participants
@@ -23,6 +25,7 @@ class QuizModel {
       duration: data['duration'] ?? 0,
       title: data['title'] ?? 'No Title',
       totalQuestions: data['totalQuestions'] ?? 0,
+      quizCode: data["quizCode"] ?? "",
       rules: (data['rules'] as List<dynamic>? ?? [])
           .map((e) => e.toString())
           .toList(),
