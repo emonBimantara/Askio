@@ -1,4 +1,4 @@
-import 'package:askio/Components/quizzes_card.dart';
+import 'package:askio/Widgets/quizzes_card.dart';
 import 'package:askio/Features/Home/Controller/home_controller.dart';
 import 'package:askio/Widgets/delete_quiz_dialog.dart';
 import 'package:askio/Widgets/home_skeleton.dart';

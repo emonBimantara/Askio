@@ -1,6 +1,6 @@
-import 'package:askio/Components/answer_bar.dart';
+import 'package:askio/Widgets/answer_bar.dart';
 import 'package:askio/Components/custom_button.dart';
-import 'package:askio/Components/question_number_bar.dart';
+import 'package:askio/Widgets/question_number_bar.dart';
 import 'package:askio/Features/Auth/Controller/auth_controller.dart';
 import 'package:askio/Features/Home/Model/quiz_model.dart';
 import 'package:askio/Features/Quiz/Controller/question_controller.dart';
