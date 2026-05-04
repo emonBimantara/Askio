@@ -3,8 +3,10 @@ import 'package:askio/Features/Auth/Views/login_page.dart';
 import 'package:askio/Features/Auth/Views/register_page.dart';
 import 'package:askio/Features/Home/Model/quiz_model.dart';
 import 'package:askio/Features/Home/Views/add_quiz_page.dart';
+import 'package:askio/Features/Home/Views/history_detail_page.dart';
 import 'package:askio/Features/Home/Views/home_page.dart';
 import 'package:askio/Features/Home/Views/quiz_preview_page.dart';
+import 'package:askio/Features/Quiz/Model/quiz_result_model.dart';
 import 'package:askio/Features/Quiz/View/question_page.dart';
 // import 'package:askio/Features/Start/onboarding_page.dart';
 import 'package:askio/Features/Start/splash_page.dart';
@@ -16,8 +18,6 @@ class AppRouter {
     switch (settings.name) {
       case AppRoutes.splashPage:
         return MaterialPageRoute(builder: (_) => SplashPage());
-      // case AppRoutes.onboardingPage:
-      //   return MaterialPageRoute(builder: (_) => OnboardingPage());
       case AppRoutes.loginPage:
         return MaterialPageRoute(builder: (_) => LoginPage());
       case AppRoutes.registerPage:
@@ -34,6 +34,11 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => QuestionPage(quiz: quiz));
       case AppRoutes.forgotEmailPage:
         return MaterialPageRoute(builder: (_) => ForgotEmailPage());
+      case AppRoutes.historyDetailPage:
+        final result = settings.arguments as QuizResultModel;
+        return MaterialPageRoute(
+          builder: (_) => HistoryDetailPage(result: result),
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(body: Center(child: Text("Page Not Found"))),

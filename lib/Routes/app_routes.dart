@@ -8,4 +8,5 @@ class AppRoutes {
   static const String questionPage = "/questionPage";
   static const String resultPage = "/resultPage";
   static const String forgotEmailPage = "/forgotEmailPage";
+  static const String historyDetailPage = "/historyDetailPage";
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:askio/Features/Quiz/Controller/question_controller.dart';
-import 'package:askio/Features/Auth/Controller/auth_controller.dart';
 
 void showSubmitDialog({
   required QuestionController controller,
