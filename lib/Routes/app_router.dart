@@ -8,6 +8,7 @@ import 'package:askio/Features/Home/Views/home_page.dart';
 import 'package:askio/Features/Home/Views/quiz_preview_page.dart';
 import 'package:askio/Features/Quiz/Model/quiz_result_model.dart';
 import 'package:askio/Features/Quiz/View/question_page.dart';
+import 'package:askio/Features/Quiz/View/teacher_quiz_detail_page.dart';
 // import 'package:askio/Features/Start/onboarding_page.dart';
 import 'package:askio/Features/Start/splash_page.dart';
 import 'package:askio/Routes/app_routes.dart';
@@ -38,6 +39,11 @@ class AppRouter {
         final result = settings.arguments as QuizResultModel;
         return MaterialPageRoute(
           builder: (_) => HistoryDetailPage(result: result),
+        );
+      case AppRoutes.teacherQuizDetailPage:
+        final quiz = settings.arguments as QuizModel;
+        return MaterialPageRoute(
+          builder: (_) => TeacherQuizDetailPage(quiz: quiz),
         );
       default:
         return MaterialPageRoute(

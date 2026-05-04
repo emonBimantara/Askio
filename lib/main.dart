@@ -9,6 +9,7 @@ import 'package:askio/Features/Home/Views/home_page.dart';
 import 'package:askio/Features/Home/Views/quiz_preview_page.dart';
 import 'package:askio/Features/Quiz/Model/quiz_result_model.dart';
 import 'package:askio/Features/Quiz/View/question_page.dart';
+import 'package:askio/Features/Quiz/View/teacher_quiz_detail_page.dart';
 import 'package:askio/Features/Start/splash_page.dart';
 import 'package:askio/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -57,6 +58,10 @@ class MyApp extends StatelessWidget {
           name: '/historyDetailPage',
           page: () =>
               HistoryDetailPage(result: Get.arguments as QuizResultModel),
+        ),
+        GetPage(
+          name: '/teacherQuizDetail',
+          page: () => TeacherQuizDetailPage(quiz: Get.arguments as QuizModel),
         ),
       ],
     );
