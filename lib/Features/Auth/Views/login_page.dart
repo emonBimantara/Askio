@@ -17,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final AuthController authController = Get.find();
 
-  bool isPasswordHidden = true; // 🔥 state toggle
+  bool isPasswordHidden = true;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,6 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 30),
 
-              // EMAIL
               CustomTextfield(
                 hintText: "Enter your email",
                 obscureText: false,
@@ -46,7 +45,6 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 20),
 
-              // PASSWORD
               CustomTextfield(
                 hintText: "Enter your password",
                 obscureText: isPasswordHidden,

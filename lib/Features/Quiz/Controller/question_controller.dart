@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:askio/Features/Quiz/Services/gemini_service.dart';
+import 'package:askio/Features/Quiz/Services/groq_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../Model/question_model.dart';
@@ -13,12 +15,17 @@ class QuestionController extends GetxController {
 
   Timer? _timer;
   var remainingSeconds = 0.obs;
-  
+
   String? _currentQuizId;
   String? _currentQuizTitle;
   String? _currentUserId;
 
-  void startTimer(int durationMinutes, {required String quizId, required String userId, required String quizTitle}) {
+  void startTimer(
+    int durationMinutes, {
+    required String quizId,
+    required String userId,
+    required String quizTitle,
+  }) {
     _currentQuizId = quizId;
     _currentUserId = userId;
     _currentQuizTitle = quizTitle;
@@ -59,7 +66,7 @@ class QuestionController extends GetxController {
       quizTitle: _currentQuizTitle ?? "Untitled Quiz",
       userId: _currentUserId ?? "",
     );
-    
+
     Get.offAllNamed('/home');
   }
 
@@ -71,7 +78,7 @@ class QuestionController extends GetxController {
 
   void inputAnswer(int questionIndex, int answerIndex) {
     userAnswers[questionIndex] = answerIndex;
-    userAnswers.refresh(); 
+    userAnswers.refresh();
   }
 
   void goToQuestion(int index) {
@@ -97,7 +104,8 @@ class QuestionController extends GetxController {
 
     int correct = 0;
     for (int i = 0; i < questions.length; i++) {
-      if (i < userAnswers.length && userAnswers[i] == questions[i].correctAnswerIndex) {
+      if (i < userAnswers.length &&
+          userAnswers[i] == questions[i].correctAnswerIndex) {
         correct++;
       }
     }
@@ -109,38 +117,76 @@ class QuestionController extends GetxController {
     required String quizTitle,
     required String userId,
   }) async {
-  
     try {
       isSubmitting.value = true;
       _timer?.cancel();
 
-      List<ResultDetailModel> details = questions.asMap().entries.map((entry) {
-        int index = entry.key;
-        var q = entry.value;
-        int? selectedAns = index < userAnswers.length ? userAnswers[index] : null;
+      List<Map<String, String>> incorrectListForAI = [];
 
-        return ResultDetailModel(
-          questionText: q.questionText,
-          options: q.options,
-          selectedAnswerIndex: selectedAns,
-          correctAnswerIndex: q.correctAnswerIndex,
-          isCorrect: selectedAns == q.correctAnswerIndex,
+      for (int i = 0; i < questions.length; i++) {
+        var q = questions[i];
+        int? selectedAns = i < userAnswers.length ? userAnswers[i] : null;
+        bool isCorrect = selectedAns == q.correctAnswerIndex;
+
+        if (!isCorrect && selectedAns != null) {
+          incorrectListForAI.add({
+            "id": i.toString(),
+            "question": q.questionText,
+            "userAnswer": q.options[selectedAns],
+            "correctAnswer": q.options[q.correctAnswerIndex],
+          });
+        }
+      }
+
+      final groq = GroqService();
+      Map<String, String> allFeedback = {};
+
+      if (incorrectListForAI.isNotEmpty) {
+        debugPrint("Requesting Batch AI Feedback via Groq for Askio...");
+        allFeedback = await groq.getBatchFeedback(
+          incorrectQuestions: incorrectListForAI,
         );
-      }).toList();
+        print("All Feedback Map: $allFeedback");
+      }
 
-      QuizResultModel finalResult = QuizResultModel(
-        userId: userId,
-        quizId: quizId,
-        quizTitle: quizTitle,
-        score: calculateScore(),
-        details: details,
+      List<ResultDetailModel> details = [];
+      for (int i = 0; i < questions.length; i++) {
+        var q = questions[i];
+        int? selectedAns = i < userAnswers.length ? userAnswers[i] : null;
+        bool isCorrect = selectedAns == q.correctAnswerIndex;
+
+        details.add(
+          ResultDetailModel(
+            questionText: q.questionText,
+            options: q.options,
+            selectedAnswerIndex: selectedAns,
+            correctAnswerIndex: q.correctAnswerIndex,
+            isCorrect: isCorrect,
+            selectedAnswerText: selectedAns != null
+                ? q.options[selectedAns]
+                : "Not answered",
+            correctAnswerText: q.options[q.correctAnswerIndex],
+            aiFeedback:
+                allFeedback[i.toString()] ??
+                (isCorrect ? null : "Explanation temporarily unavailable."),
+          ),
+        );
+      }
+
+      await QuizResultService().saveQuiz(
+        QuizResultModel(
+          userId: userId,
+          quizId: quizId,
+          quizTitle: quizTitle,
+          score: calculateScore(),
+          details: details,
+        ),
       );
 
-      await QuizResultService().saveQuiz(finalResult);
-      
+      debugPrint("✅ Submission successful with Groq!");
     } catch (e) {
-      debugPrint("ERROR submitQuiz: $e");
-      Get.snackbar("Error", "Failed to submit answers. Please try again.");
+      debugPrint("❌ ERROR submitQuiz: $e");
+      Get.snackbar("Oops!", "Failed to save your answers.");
     } finally {
       isSubmitting.value = false;
     }

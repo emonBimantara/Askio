@@ -23,7 +23,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   final AuthController authController = Get.find();
 
-  // 🔥 state toggle
   bool isPasswordHidden = true;
   bool isConfirmPasswordHidden = true;
 
@@ -45,7 +44,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 30),
 
-              // USERNAME
               CustomTextfield(
                 hintText: "Username",
                 obscureText: false,
@@ -54,7 +52,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 20),
 
-              // EMAIL
               CustomTextfield(
                 hintText: "Enter your email",
                 obscureText: false,
@@ -63,7 +60,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 20),
 
-              // PASSWORD
               CustomTextfield(
                 hintText: "Enter your password",
                 obscureText: isPasswordHidden,
@@ -82,7 +78,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 20),
 
-              // CONFIRM PASSWORD
               CustomTextfield(
                 hintText: "Confirm your password",
                 obscureText: isConfirmPasswordHidden,

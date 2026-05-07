@@ -8,6 +8,7 @@ class QuizResultModel {
   final int score;
   final DateTime? createdAt;
   final List<ResultDetailModel> details;
+  final String? aiFeedback;
 
   QuizResultModel({
     this.id,
@@ -17,16 +18,36 @@ class QuizResultModel {
     required this.score,
     this.createdAt,
     required this.details,
+    this.aiFeedback,
   });
+
+  List<Map<String, String>> toGeminiPayload() {
+    return details.where((detail) => !detail.isCorrect).map((detail) {
+      String userText =
+          (detail.selectedAnswerIndex != null &&
+              detail.selectedAnswerIndex! < detail.options.length)
+          ? detail.options[detail.selectedAnswerIndex!]
+          : "Not answered";
+
+      String correctText = detail.options[detail.correctAnswerIndex];
+
+      return {
+        "question": detail.questionText,
+        "user_answer": userText,
+        "correct_answer": correctText,
+      };
+    }).toList();
+  }
 
   Map<String, dynamic> toMap() {
     return {
       "userId": userId,
-      'quizTitle': quizTitle,
+      "quizTitle": quizTitle,
       "quizId": quizId,
       "score": score,
       "createdAt": FieldValue.serverTimestamp(),
       "details": details.map((e) => e.toMap()).toList(),
+      "aiFeedback": aiFeedback,
     };
   }
 
@@ -41,6 +62,7 @@ class QuizResultModel {
       details: (data['details'] as List? ?? [])
           .map((e) => ResultDetailModel.fromMap(e as Map<String, dynamic>))
           .toList(),
+      aiFeedback: data['aiFeedback'] ?? '',
     );
   }
 }
@@ -51,6 +73,9 @@ class ResultDetailModel {
   final int? selectedAnswerIndex;
   final int correctAnswerIndex;
   final bool isCorrect;
+  final String? selectedAnswerText;
+  final String correctAnswerText;
+  final String? aiFeedback;
 
   ResultDetailModel({
     required this.questionText,
@@ -58,6 +83,9 @@ class ResultDetailModel {
     required this.selectedAnswerIndex,
     required this.correctAnswerIndex,
     required this.isCorrect,
+    this.selectedAnswerText,
+    required this.correctAnswerText,
+    this.aiFeedback,
   });
 
   Map<String, dynamic> toMap() {
@@ -67,6 +95,9 @@ class ResultDetailModel {
       "selectedAnswerIndex": selectedAnswerIndex,
       "correctAnswerIndex": correctAnswerIndex,
       "isCorrect": isCorrect,
+      "selectedAnswerText": selectedAnswerText,
+      "correctAnswerText": correctAnswerText,
+      "aiFeedback": aiFeedback,
     };
   }
 
@@ -77,6 +108,9 @@ class ResultDetailModel {
       selectedAnswerIndex: map['selectedAnswerIndex'],
       correctAnswerIndex: map['correctAnswerIndex'] ?? 0,
       isCorrect: map['isCorrect'] ?? false,
+      selectedAnswerText: map['selectedAnswerText'],
+      correctAnswerText: map['correctAnswerText'] ?? '',
+      aiFeedback: map['aiFeedback'] ?? '',
     );
   }
 }

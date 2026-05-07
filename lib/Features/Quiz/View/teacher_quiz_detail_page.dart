@@ -40,7 +40,6 @@ class TeacherQuizDetailPage extends StatelessWidget {
 
               return Column(
                 children: [
-                  // Header
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     child: Row(
@@ -56,7 +55,6 @@ class TeacherQuizDetailPage extends StatelessWidget {
                     ),
                   ),
 
-                  // Container Putih
                   Expanded(
                     child: Container(
                       width: double.infinity,
@@ -74,7 +72,6 @@ class TeacherQuizDetailPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Progress Indikator (Nomor Soal)
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(

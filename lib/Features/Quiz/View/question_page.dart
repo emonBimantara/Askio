@@ -92,7 +92,7 @@ class QuestionPage extends StatelessWidget {
                                       ? Colors.red.withValues(alpha: 0.1)
                                       : const Color(
                                           0xFF2120FF,
-                                        ).withValues(alpha:0.1),
+                                        ).withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Row(
