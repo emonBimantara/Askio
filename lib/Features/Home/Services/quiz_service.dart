@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../Model/quiz_model.dart';
 
@@ -97,6 +98,25 @@ class QuizService {
           .toList();
     } catch (e) {
       print("Error fetching quiz history: $e");
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getParticipantAttempts(
+    String quizId,
+    String userId,
+  ) async {
+    try {
+      final snapshot = await _db
+          .collection('user_results')
+          .where('quizId', isEqualTo: quizId)
+          .where('userId', isEqualTo: userId)
+          .orderBy('createdAt', descending: false)
+          .get();
+
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      debugPrint("Error fetching attempts: $e");
       return [];
     }
   }

@@ -23,8 +23,7 @@ class GroqService {
           "messages": [
             {
               "role": "system",
-              "content": 
-              """
+              "content": """
                 You are 'Askio AI', a brilliant and supportive senior student mentor. 
                 Your goal is to help students understand their mistakes by providing a 'deep dive' explanation that is easy to digest.
 
@@ -72,5 +71,68 @@ class GroqService {
       print("Groq Catch Error: $e");
     }
     return {};
+  }
+
+  Future<String> getTeacherInsight({
+    required Map<String, int> weakPoints,
+    required String quizTitle,
+  }) async {
+    if (weakPoints.isEmpty) {
+      return "There is not enough quiz data available for analysis yet.";
+    }
+
+    String questionsData = weakPoints.entries
+        .map((e) => "- Question: '${e.key}' (Missed by: ${e.value} students)")
+        .join("\n");
+
+    try {
+      final response = await http.post(
+        Uri.parse(_baseUrl),
+        headers: {
+          "Authorization": "Bearer $_apiKey",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "model": "llama-3.3-70b-versatile",
+          "messages": [
+            {
+              "role": "system",
+              "content": 
+              """
+                You are 'Askio AI Specialist', an expert educational consultant. 
+                Your task is to analyze quiz results for a teacher and provide actionable teaching insights.
+                
+                Based on the list of questions that students failed most frequently:
+                1. Identify the common conceptual gap (why are they struggling?).
+                2. Provide a brief strategy for the teacher to re-teach this topic more effectively.
+                3. Keep the tone professional, supportive, and insightful.
+                
+                Rules:
+                - Use concise but impactful language.
+                - Format: Use plain text only.
+                - Language: English (clear and easy to understand).
+              """,
+            },
+            {
+              "role": "user",
+              "content":
+                  "Quiz Title: $quizTitle\n\nWeak Points Data:\n$questionsData",
+            },
+          ],
+          "temperature": 0.5,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        return data['choices'][0]['message']['content'] ??
+            "Failed to generate AI insight.";
+      }
+    } catch (e) {
+      print("Error getting teacher insight: $e");
+    }
+
+    return "AI analysis is currently unavailable.";
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:askio/Features/Quiz/Services/gemini_service.dart';
 import 'package:askio/Features/Quiz/Services/groq_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

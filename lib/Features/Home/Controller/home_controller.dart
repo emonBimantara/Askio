@@ -14,8 +14,8 @@ class HomeController extends GetxController {
   var isLoading = true.obs;
   var userRole = 'student'.obs;
   var isLoggingOut = false.obs;
-  
-  var userName = 'User'.obs; 
+
+  var userName = 'User'.obs;
 
   final TextEditingController codeController = TextEditingController();
 
@@ -31,7 +31,7 @@ class HomeController extends GetxController {
       final user = authController.user;
       if (user != null) {
         userName.value = user.displayName ?? "User";
-        
+
         userRole.value = await _userService.getUserRole(user.uid);
         await refreshQuizzes();
       }
@@ -73,7 +73,7 @@ class HomeController extends GetxController {
 
     if (user != null) {
       isLoading(true);
-      
+
       String studentName = userName.value;
 
       bool success = await _quizService.joinQuizByCode(

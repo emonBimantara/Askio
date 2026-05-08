@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import '../Model/quiz_result_model.dart';
 
 class QuizResultService {
@@ -29,5 +30,40 @@ class QuizResultService {
       print("ERROR getQuizResult: $e");
       return [];
     }
+  }
+
+  Future<List<Map<String, dynamic>>> getAllParticipantResults(
+    String quizId,
+  ) async {
+    try {
+      final snapshot = await db
+          .collection('user_results')
+          .where('quizId', isEqualTo: quizId)
+          .get();
+
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      debugPrint("❌ Error fetching all results: $e");
+      return [];
+    }
+  }
+
+  Map<String, int> analyzeWeakPoints(List<Map<String, dynamic>> allResults) {
+    Map<String, int> failureCount = {};
+
+    for (var result in allResults) {
+      List details = result['details'] ?? [];
+      for (var item in details) {
+        if (item['isCorrect'] == false) {
+          String question = item['questionText'] ?? "Unknown Question";
+          failureCount[question] = (failureCount[question] ?? 0) + 1;
+        }
+      }
+    }
+
+    var sortedEntries = failureCount.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    return Map.fromEntries(sortedEntries);
   }
 }

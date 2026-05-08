@@ -18,89 +18,97 @@ class HistoryDetailPage extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         height: MediaQuery.of(context).size.height * 0.75,
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(35)),
         ),
         child: Column(
           children: [
+            const SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.only(
-                top: 15,
-                bottom: 20,
-                left: 25,
-                right: 20,
-              ),
+              width: 45,
+              height: 5,
               decoration: BoxDecoration(
-                color: const Color(0xFF2120FF).withValues(alpha: 0.05),
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(30),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    width: 50,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF2120FF).withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.auto_awesome,
-                          color: Color(0xFF2120FF),
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 15),
-                      const Expanded(
-                        child: Text(
-                          "Gemini Tutor AI",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF1A1A1A),
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => Get.back(),
-                        icon: const Icon(Icons.close, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ],
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
-
+            const SizedBox(height: 25),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF2120FF), Color(0xFF5352FF)],
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.auto_awesome,
+                    color: Colors.white,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 15),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Askio AI Tutor",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "Personalized feedback for you",
+                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () => Get.back(),
+                  icon: const Icon(Icons.close_rounded, color: Colors.grey),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const Divider(),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(25),
-                child: MarkdownBody(
-                  data: feedbackText,
-                  styleSheet: MarkdownStyleSheet(
-                    p: const TextStyle(
-                      fontSize: 16,
-                      height: 1.6,
-                      color: Colors.black87,
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5EDE2).withValues(alpha: 0.03),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: const Color(0xFF2120FF).withValues(alpha: 0.08),
                     ),
-                    strong: const TextStyle(fontWeight: FontWeight.bold),
-                    listBullet: const TextStyle(fontSize: 16),
+                  ),
+                  child: MarkdownBody(
+                    data: feedbackText,
+                    styleSheet: MarkdownStyleSheet(
+                      p: const TextStyle(
+                        fontSize: 17,
+                        height: 1.6,
+                        color: Colors.black87,
+                      ),
+                      strong: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2120FF),
+                      ),
+                      listBullet: const TextStyle(color: Color(0xFF2120FF)),
+                    ),
                   ),
                 ),
               ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),

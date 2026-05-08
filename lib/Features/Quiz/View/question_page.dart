@@ -60,8 +60,7 @@ class QuestionPage extends StatelessWidget {
 
                 final currentIndex = controller.currentIndex.value;
                 final currentQuestion = controller.questions[currentIndex];
-                final isLastQuestion =
-                    currentIndex == controller.questions.length - 1;
+                final isLastQuestion = currentIndex == controller.questions.length - 1;
 
                 return Stack(
                   children: [
